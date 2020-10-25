@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ModelToRdf;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
@@ -46,8 +47,7 @@ namespace RdfSerializer.UnitTests
             };
             var graph = testObject.SerializeRdf();
             Assert.NotNull(graph);
-            var nTriplesFormatter = new NTriplesFormatter(NTriplesSyntax.Rdf11);
-            var actual = graph.Triples.Select(x => x.ToString(nTriplesFormatter)).ToList();
+            var actual = graph.GraphToNTriples();
 
             var expected = new List<string>() {
                 "<http://example.rdf/123> <http://example.rdf/Id> \"123\" .",
@@ -58,7 +58,6 @@ namespace RdfSerializer.UnitTests
                 "<http://example.rdf/123> <http://example.rdf/BoolEnumerable> \"True\" .",
                 "<http://example.rdf/123> <http://example.rdf/BoolEnumerable> \"False\" .",
                 "<http://example.rdf/123> <http://example.rdf/BoolList> \"True\" .",
-
             };
 
             foreach (var item in expected) {
@@ -72,8 +71,9 @@ namespace RdfSerializer.UnitTests
 
             //TODO: What about the Enum?
             //TODO: What about the NullString?
-            //TODO: Fails when a collection (e.g.:BoolEnumerable) has 2 times true; It only shows once.
-            Assert.Equal(expected.Count, actual.Count);
+            //TODO: Fails when a collection (e.g.:BoolEnumerable) has 2 times true; It only shows one
+            //TODO: DateTime ToString is different in Windows and Linux.
+            Assert.Equal(expected.Count, actual.Count());
             Assert.Empty(expected.Except(actual));
         }
     }
