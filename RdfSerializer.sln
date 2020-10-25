@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RdfSerializer", "RdfSerializer\RdfSerializer.csproj", "{88DF1C5A-5ED8-4115-9770-61E86CD02B75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RdfSerializer.UnitTests", "RdfSerializer.UnitTests\RdfSerializer.UnitTests.csproj", "{2A63F495-B66F-4118-A3C7-FE983D1FA2AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RdfSerializer.UnitTests", "RdfSerializer.UnitTests\RdfSerializer.UnitTests.csproj", "{2A63F495-B66F-4118-A3C7-FE983D1FA2AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

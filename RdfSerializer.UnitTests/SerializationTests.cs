@@ -53,11 +53,14 @@ namespace RdfSerializer.UnitTests
                 "<http://example.rdf/123> <http://example.rdf/Id> \"123\" .",
                 "<http://example.rdf/123> <http://example.rdf/StringProperty> \"string value\" .",
                 "<http://example.rdf/123> <http://example.rdf/DoubleProperty> \"-1.1\" .",
+                "<http://example.rdf/123> <http://example.rdf/IntProperty> \"0\" .",
+                "<http://example.rdf/123> <http://example.rdf/TestEnum1> \"0\" .",
                 "<http://example.rdf/123> <http://example.rdf/DateTime> \"2020-10-25 13:24:25\" .",
                 "<http://example.rdf/123> <http://example.rdf/BoolProperty> \"False\" .",
                 "<http://example.rdf/123> <http://example.rdf/BoolEnumerable> \"True\" .",
                 "<http://example.rdf/123> <http://example.rdf/BoolEnumerable> \"False\" .",
                 "<http://example.rdf/123> <http://example.rdf/BoolList> \"True\" .",
+                "<http://example.rdf/123> <http://example.rdf/NullString> \"\" .",
             };
 
             foreach (var item in expected) {
