@@ -57,7 +57,6 @@ namespace RdfSerializer.UnitTests
                 "<http://example.rdf/123> <http://example.rdf/BoolProperty> \"False\" .",
                 "<http://example.rdf/123> <http://example.rdf/BoolEnumerable> \"True\" .",
                 "<http://example.rdf/123> <http://example.rdf/BoolEnumerable> \"False\" .",
-                //"<http://example.rdf/123> <http://example.rdf/BoolEnumerable> \"True\" .",
                 "<http://example.rdf/123> <http://example.rdf/BoolList> \"True\" .",
             };
 
@@ -65,7 +64,7 @@ namespace RdfSerializer.UnitTests
             //TODO: What about the NullString?
             //TODO: Fails when a collection (e.g.:BoolEnumerable) has 2 times true; It only shows once.
             Assert.Equal(expected.Count, actual.Count);
-            Assert.False(expected.Except(actual).Any());
+            Assert.Empty(expected.Except(actual));
         }
     }
 }
