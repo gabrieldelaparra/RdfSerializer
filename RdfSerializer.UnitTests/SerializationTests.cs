@@ -58,7 +58,17 @@ namespace RdfSerializer.UnitTests
                 "<http://example.rdf/123> <http://example.rdf/BoolEnumerable> \"True\" .",
                 "<http://example.rdf/123> <http://example.rdf/BoolEnumerable> \"False\" .",
                 "<http://example.rdf/123> <http://example.rdf/BoolList> \"True\" .",
+
             };
+
+            foreach (var item in expected) {
+                Assert.Contains(item, actual);
+            }
+
+            foreach (var item in actual)
+            {
+                Assert.Contains(item, expected);
+            }
 
             //TODO: What about the Enum?
             //TODO: What about the NullString?
