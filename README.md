@@ -1,5 +1,6 @@
 # RDFSerializer
 ![Build and Test](https://github.com/gabrieldelaparra/RdfSerializer/workflows/Build%20and%20Test/badge.svg)
+
 Library is a WIP. It converts an object to json and uses the functionality of https://github.com/gabrieldelaparra/ModelToRdf to convert it to an RDF graph. 
 Depends on dotnetRDDF for all that has to do with RDF.
 I has several drawbacks, mostly the ones lister in ModelToRdf. There is use case example in the tests: 
