@@ -6,8 +6,12 @@
 
   <ItemGroup>
     <PackageReference Include="dotNetRDF" Version="2.6.0" />
-    <PackageReference Include="ModelToRdf" Version="1.0.1.4" />
     <PackageReference Include="Wororo.Utilities" Version="1.0.2.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ModelToRDF\ModelToRdf.Extensions\ModelToRdf.Extensions.csproj" />
+    <ProjectReference Include="..\..\ModelToRDF\ModelToRdf\ModelToRdf.csproj" />
   </ItemGroup>
 
 </Project>

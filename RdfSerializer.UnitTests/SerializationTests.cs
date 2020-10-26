@@ -2,35 +2,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ModelToRdf;
+using ModelToRdf.Extensions;
+using RdfSerializer.Extensions;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
+using Wororo.Utilities;
 using Xunit;
 
 namespace RdfSerializer.UnitTests
 {
-    public class TestClassWithId
-    {
-        public int Id { get; set; }
-        public string StringProperty { get; set; }
-        public int IntProperty { get; set; }
-        public double DoubleProperty { get; set; }
-        public DateTime DateTime { get; set; }
-        public bool BoolProperty { get; set; }
-        public IEnumerable<bool> BoolEnumerable { get; set; }
-        public List<bool> BoolList { get; set; }
-        public bool[] BoolArray { get; set; }
-        public TestEnum1 TestEnum1 { get; set; }
-        public string NullString { get; set; }
-    }
-
-    public enum TestEnum1
-    {
-        First,
-        Second,
-    }
     public class SerializationTests
     {
+        [Fact]
+        public void TestSerializeValueInt() {
+            int i1 = 2;
+            var t1 = i1.ToTriple();
+            //var g1 = i1.SerializeRdf();
+            Assert.NotNull(t1);
+            //Assert.NotEmpty(g1.Triples);
+            //Assert.Single(g1.Triples);
+            //var triple1 = g1.Triples.FirstOrDefault();
+            //Assert.NotNull(triple1);
+            //Assert.NotNull(triple1.Subject);
+            //Assert.NotNull(triple1.Predicate);
+            //Assert.NotNull(triple1.Object);
+        }
+
         [Fact]
         public void TestSerializeClassWithId() {
             var testObject = new TestClassWithId() {
