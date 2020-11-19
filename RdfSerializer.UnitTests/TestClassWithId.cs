@@ -17,4 +17,22 @@ namespace RdfSerializer.UnitTests
         public TestEnum1 TestEnum1 { get; set; }
         public string NullString { get; set; }
     }
+
+    public class InnerClassWithId
+    {
+        public int Id { get; set; }
+        public bool BoolValue { get; set; }
+    }
+
+    public class OuterClassWithIdAndInnerClass
+    {
+        public int Id { get; set; }
+        public InnerClassWithId InnerClassItem { get; set; }
+    }
+
+    public class OuterClassWithIdAndInnerClassList
+    {
+        public int Id { get; set; }
+        public List<InnerClassWithId> InnerClassList { get; set; }
+    }
 }

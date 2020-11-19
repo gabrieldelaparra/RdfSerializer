@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+
+using RdfSerializer.Services;
 
 using VDS.RDF;
 using VDS.RDF.Parsing;
@@ -17,6 +20,7 @@ namespace RdfSerializer.Extensions
         private static readonly NodeFactory NodeFactory = new NodeFactory();
         public static CultureInfo CultureInfo = CultureInfo.InvariantCulture;
         private static string defaultIri = @"http://example.rdf/";
+        public static IIdProvider _idProvider;
 
         public static ILiteralNode ToLiteralNode(this bool value) => value.ToLiteral(NodeFactory);
         public static ILiteralNode ToLiteralNode(this byte value) => value.ToLiteral(NodeFactory);
@@ -75,30 +79,111 @@ namespace RdfSerializer.Extensions
         public static IUriNode ToUriNode(this string value) => new NodeFactory().CreateUriNode(value.ToUri());
         public static IUriNode ToUriNode(this string value, string iri) => new NodeFactory().CreateUriNode(value.ToUri(iri));
 
-        public static Triple ToLiteralTriple(this object literalObject, INode nodeId, INode predicate)
+        public static Triple ToLiteralTriple(INode nodeId, INode predicate, object literalObject)
         {
             return new Triple(nodeId, predicate, literalObject.ToLiteralNode());
         }
 
-        public static IEnumerable<Triple> ToObjectTriples(this object obj)
+        //public static IEnumerable<Triple> ToObjectTriples(this object obj)
+        //{
+        //    var objProperties = obj.DictionaryFromType();
+        //    var guidNode = _idProvider.GetId(obj);
+        //    foreach (var objProperty in objProperties)
+        //    {
+        //        var propertyName = objProperty.Key;
+        //        var propertyValue = objProperty.Value;
+        //        if (propertyValue == null)
+        //            continue;
+        //        if (propertyValue.IsLiteralType())
+        //            yield return ToLiteralTriple(guidNode, propertyName.ToUriNode(defaultIri), propertyValue);
+        //        else
+        //        {
+        //            foreach (var triple in ToTriples(propertyValue, guidNode, propertyName.ToUriNode(defaultIri)))
+        //                yield return triple;
+        //        }
+        //    }
+        //}
+
+        public static IEnumerable<Triple> PropertyToTriple(INode parentNode, INode propertyName, object propertyValue)
+        {
+            //This method is not aware that it may have an Id;
+            if (propertyValue == null || propertyValue is DBNull)
+            {
+                foreach (var triple in Array.Empty<Triple>())
+                {
+                    yield return triple;
+                }
+            }
+            else if (propertyValue.IsLiteralType())
+            {
+                yield return ToLiteralTriple(parentNode, propertyName, propertyValue);
+            }
+            else if (propertyValue.IsEnumerable())
+            {
+                //Foreach item in the collection:
+                foreach (var item in (IEnumerable)propertyValue)
+                {
+                    //Add a node between the parent and the child
+                    var childGuid = _idProvider.GetId(item);
+                    yield return new Triple(parentNode, propertyName, childGuid);
+                    //Then call to ObjectToTriples;
+                    var childElements = ObjectToTriples(childGuid, item);
+                    foreach (var childTriple in childElements)
+                    {
+                        yield return childTriple;
+                    }
+                }
+            }
+            else
+            {
+                //It is an object:
+                var childGuid = _idProvider.GetId(propertyValue);
+                //Add a node between the parent and the child
+                yield return new Triple(parentNode, propertyName, childGuid);
+                //Then call to ObjectToTriples;
+                var childElements = ObjectToTriples(childGuid, propertyValue);
+                foreach (var childTriple in childElements)
+                {
+                    yield return childTriple;
+                }
+            }
+        }
+
+        public static IEnumerable<Triple> ObjectToTriples(INode parentNode, object obj)
         {
             var objProperties = obj.DictionaryFromType();
-            var idNode = objProperties.GetIdNode();
             foreach (var objProperty in objProperties)
             {
                 var propertyName = objProperty.Key;
+                var propertyNameNode = propertyName.ToUriNode(defaultIri);
                 var propertyValue = objProperty.Value;
-                if (propertyValue == null)
+                if (propertyValue == null || propertyValue is DBNull)
                     continue;
-                if (propertyValue.IsLiteralType())
-                    yield return ToLiteralTriple(propertyValue, idNode, propertyName.ToUriNode(defaultIri));
-                else {
-                    var newBlankNode = NodeFactory.CreateBlankNode();
-                    yield return ToLiteralTriple(newBlankNode.ToString(), idNode, propertyName.ToUriNode(defaultIri));
-                    foreach (var triple in ToTriples(propertyValue, newBlankNode, "Value".ToUriNode(defaultIri)))
-                        yield return triple;
-                }
 
+                if (propertyValue.IsLiteralType())
+                    yield return ToLiteralTriple(parentNode, propertyNameNode, propertyValue);
+
+                else if (propertyValue.IsEnumerable())
+                {
+                    foreach (var enumerableItem in (IEnumerable)propertyValue)
+                    {
+                        var childGuid = _idProvider.GetId(enumerableItem);
+                        yield return new Triple(parentNode, propertyNameNode, childGuid);
+                        var objectTriples = ObjectToTriples(childGuid, enumerableItem);
+                        foreach (var objectTriple in objectTriples)
+                        {
+                            yield return objectTriple;
+                        }
+                    }
+                }
+                else
+                {
+                    var propertyTriples = PropertyToTriple(parentNode, propertyName.ToUriNode(defaultIri), propertyValue);
+                    foreach (var propertyTriple in propertyTriples)
+                    {
+                        yield return propertyTriple;
+                    }
+                }
             }
         }
 
@@ -153,20 +238,38 @@ namespace RdfSerializer.Extensions
 
         public static IEnumerable<Triple> ToTriples(this object obj, INode nodeId = null, INode predicateNode = null)
         {
-            if(nodeId == null)
-                nodeId = NodeFactory.CreateBlankNode();
+            if (nodeId == null)
+                nodeId = _idProvider.GetId(obj);
             if (predicateNode == null)
                 predicateNode = "predicateNode".ToUriNode(defaultIri);
-            if (obj == null || obj is DBNull)
-                return Array.Empty<Triple>();
-            if (obj.IsLiteralType())
-                return new[] { new Triple(nodeId, predicateNode, obj.ToLiteralNode()) };
-            if (obj.IsEnumerable())
-                foreach (var item in (IEnumerable)obj)
-                    return item.ToTriples(nodeId, predicateNode);
-            else
-                return obj.ToObjectTriples();
-            return Array.Empty<Triple>();
+
+            return ObjectToTriples(nodeId, obj);
+
+            //if (obj == null || obj is DBNull)
+            //{
+            //    yield return null;
+            //}
+            //else if (obj.IsLiteralType())
+            //{
+            //    yield return ToLiteralTriple(nodeId, predicateNode, obj);
+            //}
+            //else if (obj.IsEnumerable())
+            //{
+            //    foreach (var enumerableItem in (IEnumerable)obj)
+            //    {
+            //        var
+            //        //yield return new Triple(nodeId, predicateNode, item.ToString().ToLiteralNode());
+            //        foreach (var objectTriple in enumerableItem.ToTriples(nodeId, predicateNode))
+            //        {
+            //            yield return objectTriple;
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    foreach (var objectTriple in obj.ToObjectTriples())
+            //        yield return objectTriple;
+            //}
         }
 
         public static Triple ToTriple(this object obj)
