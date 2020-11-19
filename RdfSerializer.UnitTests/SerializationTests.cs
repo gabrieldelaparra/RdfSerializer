@@ -54,21 +54,16 @@ namespace RdfSerializer.UnitTests
             var actual = triples.ToNTriples11().ToList();
 
             var expected = new List<string>() {
-                "<http://example.rdf/123> <http://example.rdf/TestEnum1> \"0\" .",
-                "<http://example.rdf/123> <http://example.rdf/BoolEnumerable> \"True\" .",
-                "<http://example.rdf/123> <http://example.rdf/BoolEnumerable> \"False\" .",
-                "<http://example.rdf/123> <http://example.rdf/BoolList> \"True\" .",
-
                 "<http://example.rdf/1> <http://example.rdf/Id> \"123\"^^<http://www.w3.org/2001/XMLSchema#integer> .",
                 "<http://example.rdf/1> <http://example.rdf/StringProperty> \"string value\"^^<http://www.w3.org/2001/XMLSchema#string> .",
                 "<http://example.rdf/1> <http://example.rdf/IntProperty> \"0\"^^<http://www.w3.org/2001/XMLSchema#integer> .",
                 "<http://example.rdf/1> <http://example.rdf/DoubleProperty> \"-1.1\"^^<http://www.w3.org/2001/XMLSchema#double> .",
                 "<http://example.rdf/1> <http://example.rdf/DateTime> \"2020-10-25T13:24:25.000000\"^^<http://www.w3.org/2001/XMLSchema#dateTime> .",
                 "<http://example.rdf/1> <http://example.rdf/BoolProperty> \"false\"^^<http://www.w3.org/2001/XMLSchema#boolean> .",
-                "<http://example.rdf/1> <http://example.rdf/BoolEnumerable> <http://example.rdf/2> .",
-                "<http://example.rdf/1> <http://example.rdf/BoolEnumerable> <http://example.rdf/3> .",
-                "<http://example.rdf/1> <http://example.rdf/BoolList> <http://example.rdf/4> .",
-                "<http://example.rdf/1> <http://example.rdf/TestEnum1> <http://example.rdf/5> .",
+                "<http://example.rdf/1> <http://example.rdf/BoolEnumerable> \"true\"^^<http://www.w3.org/2001/XMLSchema#boolean> .",
+                "<http://example.rdf/1> <http://example.rdf/BoolEnumerable> \"false\"^^<http://www.w3.org/2001/XMLSchema#boolean> .",
+                "<http://example.rdf/1> <http://example.rdf/BoolList> \"true\"^^<http://www.w3.org/2001/XMLSchema#boolean> .",
+                "<http://example.rdf/1> <http://example.rdf/TestEnum1> \"0\"^^<http://www.w3.org/2001/XMLSchema#integer> .",
 
             };
 

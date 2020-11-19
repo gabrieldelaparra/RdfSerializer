@@ -42,6 +42,9 @@ namespace RdfSerializer.Extensions
         public static ILiteralNode ToLiteralNode(this uint value) => NodeFactory.CreateLiteralNode(value.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt));
         public static ILiteralNode ToLiteralNode(this ulong value) => NodeFactory.CreateLiteralNode(value.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeUnsignedLong));
         public static ILiteralNode ToLiteralNode(this ushort value) => NodeFactory.CreateLiteralNode(value.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeUnsignedShort));
+        
+        //TODO: Implement setting to store Enum as Text:
+        public static ILiteralNode ToLiteralNode(this Enum value) => Convert.ToInt32(value).ToLiteral(NodeFactory);
         internal static ILiteralNode ToLiteralNode(this object value)
         {
             return value switch
@@ -64,6 +67,7 @@ namespace RdfSerializer.Extensions
                 uint v => v.ToLiteralNode(),
                 ulong v => v.ToLiteralNode(),
                 ushort v => v.ToLiteralNode(),
+                Enum v => v.ToLiteralNode(),
                 _ => throw new ArgumentException($"Unsupported type for literal node: {value.GetType()}")
             };
         }
@@ -212,14 +216,6 @@ namespace RdfSerializer.Extensions
             }
         }
 
-        public static INode GetIdNode(this Dictionary<string, object> objDictionary)
-        {
-            var hasIdProperty = objDictionary.Keys.Any(x => x.ToLower().Equals("id"));
-            if (hasIdProperty == true)
-                return objDictionary.FirstOrDefault(x => x.Key.ToLower().Equals("id")).Value.ToString()
-                        .ToUriNode(defaultIri);
-            return NodeFactory.CreateBlankNode();
-        }
         public static bool IsEnumerable(this object obj) => obj is IEnumerable;
         public static bool IsLiteralType(this object obj)
         {
@@ -243,6 +239,7 @@ namespace RdfSerializer.Extensions
                 uint _ => true,
                 ulong _ => true,
                 ushort _ => true,
+                Enum _ => true,
                 _ => false
             };
         }
