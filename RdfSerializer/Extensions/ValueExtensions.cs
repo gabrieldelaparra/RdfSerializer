@@ -84,26 +84,6 @@ namespace RdfSerializer.Extensions
             return new Triple(nodeId, predicate, literalObject.ToLiteralNode());
         }
 
-        //public static IEnumerable<Triple> ToObjectTriples(this object obj)
-        //{
-        //    var objProperties = obj.DictionaryFromType();
-        //    var guidNode = _idProvider.GetId(obj);
-        //    foreach (var objProperty in objProperties)
-        //    {
-        //        var propertyName = objProperty.Key;
-        //        var propertyValue = objProperty.Value;
-        //        if (propertyValue == null)
-        //            continue;
-        //        if (propertyValue.IsLiteralType())
-        //            yield return ToLiteralTriple(guidNode, propertyName.ToUriNode(defaultIri), propertyValue);
-        //        else
-        //        {
-        //            foreach (var triple in ToTriples(propertyValue, guidNode, propertyName.ToUriNode(defaultIri)))
-        //                yield return triple;
-        //        }
-        //    }
-        //}
-
         public static IEnumerable<Triple> PropertyToTriple(INode parentNode, INode propertyName, object propertyValue)
         {
             //This method is not aware that it may have an Id;
@@ -169,10 +149,16 @@ namespace RdfSerializer.Extensions
                     {
                         var childGuid = _idProvider.GetId(enumerableItem);
                         yield return new Triple(parentNode, propertyNameNode, childGuid);
-                        var objectTriples = ObjectToTriples(childGuid, enumerableItem);
-                        foreach (var objectTriple in objectTriples)
-                        {
-                            yield return objectTriple;
+
+                        if (enumerableItem.IsLiteralType()) {
+                            yield return ToLiteralTriple(childGuid, propertyNameNode, enumerableItem);
+                        }
+                        else {
+                            var objectTriples = ObjectToTriples(childGuid, enumerableItem);
+                            foreach (var objectTriple in objectTriples)
+                            {
+                                yield return objectTriple;
+                            }
                         }
                     }
                 }

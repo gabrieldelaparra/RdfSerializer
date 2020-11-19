@@ -55,12 +55,9 @@ namespace RdfSerializer.UnitTests
 
             var expected = new List<string>() {
                 "<http://example.rdf/123> <http://example.rdf/TestEnum1> \"0\" .",
-                "<http://example.rdf/123> <http://example.rdf/DateTime> \"2020-10-25 13:24:25\" .",
-                "<http://example.rdf/123> <http://example.rdf/BoolProperty> \"False\" .",
                 "<http://example.rdf/123> <http://example.rdf/BoolEnumerable> \"True\" .",
                 "<http://example.rdf/123> <http://example.rdf/BoolEnumerable> \"False\" .",
                 "<http://example.rdf/123> <http://example.rdf/BoolList> \"True\" .",
-                "<http://example.rdf/123> <http://example.rdf/NullString> \"\" .",
 
                 "<http://example.rdf/1> <http://example.rdf/Id> \"123\"^^<http://www.w3.org/2001/XMLSchema#integer> .",
                 "<http://example.rdf/1> <http://example.rdf/StringProperty> \"string value\"^^<http://www.w3.org/2001/XMLSchema#string> .",
