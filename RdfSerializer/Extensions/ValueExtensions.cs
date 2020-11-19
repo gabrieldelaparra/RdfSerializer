@@ -147,17 +147,56 @@ namespace RdfSerializer.Extensions
                 {
                     foreach (var enumerableItem in (IEnumerable)propertyValue)
                     {
-                        var childGuid = _idProvider.GetId(enumerableItem);
-                        yield return new Triple(parentNode, propertyNameNode, childGuid);
 
-                        if (enumerableItem.IsLiteralType()) {
-                            yield return ToLiteralTriple(childGuid, propertyNameNode, enumerableItem);
-                        }
-                        else {
-                            var objectTriples = ObjectToTriples(childGuid, enumerableItem);
-                            foreach (var objectTriple in objectTriples)
+                        /* I have 2 option branches:
+                         * Given:
+                         * object = { bool[] myArray = {true, false} }
+                         *
+                         * Option 1:
+                         * <object> <myArray> <true>
+                         * <object> <myArray> <false>
+                         *
+                         * Option 2:
+                         * <object> <myArray> <1>
+                         * <object> <myArray> <2>
+                         * <1> <Value> <true>
+                         * <2> <Value> <false>.
+                         */
+                        if (true)
+                        {
+                            //Depends on the desired behavior: In this branch, a direct triple is created
+                            if (enumerableItem.IsLiteralType())
                             {
-                                yield return objectTriple;
+                                yield return ToLiteralTriple(parentNode, propertyNameNode, enumerableItem);
+                                //yield return ToLiteralTriple(childGuid, "Value".ToUriNode(defaultIri), enumerableItem);
+                            }
+                            else
+                            {
+                                var childGuid = _idProvider.GetId(enumerableItem);
+                                yield return new Triple(parentNode, propertyNameNode, childGuid);
+                                var objectTriples = ObjectToTriples(childGuid, enumerableItem);
+                                foreach (var objectTriple in objectTriples)
+                                {
+                                    yield return objectTriple;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //Depends on the desired behavior: In this branch, a new "blank" (not blank) node is created
+                            var childGuid = _idProvider.GetId(enumerableItem);
+                            yield return new Triple(parentNode, propertyNameNode, childGuid);
+                            if (enumerableItem.IsLiteralType())
+                            {
+                                yield return ToLiteralTriple(childGuid, "Value".ToUriNode(defaultIri), enumerableItem);
+                            }
+                            else
+                            {
+                                var objectTriples = ObjectToTriples(childGuid, enumerableItem);
+                                foreach (var objectTriple in objectTriples)
+                                {
+                                    yield return objectTriple;
+                                }
                             }
                         }
                     }
