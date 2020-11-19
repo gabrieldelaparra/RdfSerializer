@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RdfSerializer.UnitTests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelToRdf", "..\ModelToRDF\ModelToRdf\ModelToRdf.csproj", "{DAEEE472-F646-4501-BFFF-A248E6A98270}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelToRdf.Extensions", "..\ModelToRDF\ModelToRdf.Extensions\ModelToRdf.Extensions.csproj", "{7B7011DF-E8DE-4AA6-8D8B-5227ABD1A4AB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{DAEEE472-F646-4501-BFFF-A248E6A98270}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DAEEE472-F646-4501-BFFF-A248E6A98270}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DAEEE472-F646-4501-BFFF-A248E6A98270}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7B7011DF-E8DE-4AA6-8D8B-5227ABD1A4AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7B7011DF-E8DE-4AA6-8D8B-5227ABD1A4AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7B7011DF-E8DE-4AA6-8D8B-5227ABD1A4AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7B7011DF-E8DE-4AA6-8D8B-5227ABD1A4AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

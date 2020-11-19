@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ModelToRdf;
-using ModelToRdf.Extensions;
 using RdfSerializer.Extensions;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
@@ -27,6 +26,27 @@ namespace RdfSerializer.UnitTests
             //Assert.NotNull(triple1.Subject);
             //Assert.NotNull(triple1.Predicate);
             //Assert.NotNull(triple1.Object);
+        }
+
+        [Fact]
+        public void TestNewSerializeClassWithId() {
+            var testObject = new TestClassWithId()
+            {
+                Id = 123,
+                BoolArray = new bool[0],
+                BoolEnumerable = new List<bool>() { true, false },
+                BoolList = new List<bool>() { true },
+                BoolProperty = false,
+                DateTime = new DateTime(2020, 10, 25, 13, 24, 25),
+                DoubleProperty = -1.1,
+                IntProperty = 0,
+                StringProperty = "string value",
+                TestEnum1 = TestEnum1.First,
+            };
+            var triples = testObject.ToTriples().ToList();
+            Assert.NotNull(triples);
+            Assert.NotEmpty(triples);
+            
         }
 
         [Fact]
